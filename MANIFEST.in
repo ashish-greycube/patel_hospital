@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include patel_hospital *.css
+recursive-include patel_hospital *.csv
+recursive-include patel_hospital *.html
+recursive-include patel_hospital *.ico
+recursive-include patel_hospital *.js
+recursive-include patel_hospital *.json
+recursive-include patel_hospital *.md
+recursive-include patel_hospital *.png
+recursive-include patel_hospital *.py
+recursive-include patel_hospital *.svg
+recursive-include patel_hospital *.txt
+recursive-exclude patel_hospital *.pyc
