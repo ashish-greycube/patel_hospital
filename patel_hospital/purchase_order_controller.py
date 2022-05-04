@@ -28,13 +28,14 @@ def update_item(obj, target, source_parent):
 
 @frappe.whitelist()
 def make_multiple_purchase_order(source_name, target_doc=None, args=None):
+	
 	result_doclist=[]
 	doc = frappe.get_doc("Material Request", source_name)
 	item_list = []
 	for d in doc.items:
 		item_list.append(d.item_code)
 	supplier_list=frappe.db.sql(
-		"""select default_supplier
+		"""select DISTINCT(default_supplier)
 		from `tabItem Default`
 		where parent in ({0}) and
 		company = '{1}' """.format(", ".join(["%s"] * len(item_list)),doc.company),tuple(item_list),as_list=1)
@@ -50,18 +51,19 @@ def make_multiple_purchase_order(source_name, target_doc=None, args=None):
 			supplier_items = []
 			idx=1
 			for d in target_doc.get('items'):
-				default_supplier = get_item_defaults(d.item_code, target_doc.company).get("default_supplier")
-				if supplier[0] == default_supplier:
+				default_supplier = get_item_defaults(d.item_code, target_doc.company).get("default_supplier") 
+				if supplier[0] == default_supplier :
 					d.idx=idx
 					idx=idx+1
 					supplier_items.append(d)
+					
 			target_doc.items = supplier_items
 
 			set_missing_values(source, target_doc)
 
 		def select_item(d):
-			filtered_items = args.get("filtered_children", [])
-			child_filter = d.name in filtered_items if filtered_items else True
+			# filtered_items = args.get("filtered_children", [])
+			child_filter =  True
 
 			return d.ordered_qty < d.stock_qty and child_filter
 
