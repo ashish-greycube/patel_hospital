@@ -6,6 +6,7 @@ from frappe.model.mapper import get_mapped_doc
 from frappe.utils import cstr, flt, get_link_to_form, getdate, new_line_sep, nowdate
 from six import string_types
 from erpnext.stock.doctype.item.item import get_item_defaults
+from erpnext.accounts.party import get_party_account_currency, get_party_details
 
 
 
@@ -58,6 +59,12 @@ def make_multiple_purchase_order(source_name, target_doc=None, args=None):
 					supplier_items.append(d)
 					
 			target_doc.items = supplier_items
+
+			# find supplier pricelist
+			args = get_party_details(supplier[0], party_type="Supplier", ignore_permissions=True)
+			target_doc.buying_price_list = args.buying_price_list or frappe.db.get_value(
+				"Buying Settings", None, "buying_price_list"
+			)
 
 			set_missing_values(source, target_doc)
 
