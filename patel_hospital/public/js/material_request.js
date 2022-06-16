@@ -17,6 +17,7 @@ frappe.ui.form.on('Material Request', {
             run_link_triggers: true,
             freeze: true,
             callback: function (r) {
+                console.log('r',r)
                 if (r.message) {
                     let pos = r.message
                     for (let index = 0; index < pos.length; index++) {
